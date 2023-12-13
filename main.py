@@ -14,9 +14,9 @@ def main():
     # 鍵の開閉状態を取得
     lock_status = sesame.get_lock_status()
 
-    # 鍵が開いている場合だけ、開閉状態を通知メッセージに追加
+    # 鍵が開いている場合だけ、通知メッセージに追加
     if lock_status == "unlocked":
-      notifier.add_message(f"{key_name}: {lock_status}")
+      notifier.add_message(f"{key_name}: 鍵が開いています！")
 
   # 開いている鍵の開閉状態をDiscordに通知
   if notifier.has_messages():
