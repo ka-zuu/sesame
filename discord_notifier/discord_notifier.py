@@ -9,6 +9,9 @@ class DiscordNotifier:
   def add_message(self, message):
     self.messages.append(message)
 
+  def has_messages(self):
+    return len(self.messages) > 0
+
   def send_messages(self):
     data = {
       "content": "\n".join(self.messages)

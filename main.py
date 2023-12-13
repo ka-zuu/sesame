@@ -7,18 +7,20 @@ def main():
   notifier = DiscordNotifier(config.DISCORD_WEBHOOK_URL)
 
   # 鍵ごとにSesame APIのインスタンスを作成し、開閉状態を取得
-  for uuid, secret_key in [(config.SESAME_KEY_UPPER_UUID, config.SESAME_KEY_UPPER_SECRET), (config.SESAME_KEY_DOWNER_UUID, config.SESAME_KEY_DOWNER_SECRET)]:
+  for key_name, key_config in config.SESAME_KEYS.items():
     # Sesame APIのインスタンスを作成
-    sesame = SesameAPI(config.SESAME_API_KEY, uuid, secret_key)
+    sesame = SesameAPI(config.SESAME_API_KEY, key_config["UUID"], key_config["SECRET"])
 
     # 鍵の開閉状態を取得
     lock_status = sesame.get_lock_status()
 
-    # 鍵の開閉状態を通知メッセージに追加
-    notifier.add_message(lock_status)
+    # 鍵が開いている場合だけ、開閉状態を通知メッセージに追加
+    if lock_status == "unlocked":
+      notifier.add_message(f"{key_name}: {lock_status}")
 
-  # すべての鍵の開閉状態をDiscordに通知
-  notifier.send_messages()
+  # 開いている鍵の開閉状態をDiscordに通知
+  if notifier.has_messages():
+    notifier.send_messages()
 
 if __name__ == "__main__":
   main()
